@@ -1,67 +1,36 @@
-name: Build AI-LATIHAN APK
+name: Build Android APK
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
-    name: Build AI-LATIHAN APK
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: AI-LATIHAN-GitHub-APK
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+    - uses: actions/checkout@v3
+    
+    - name: set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: '17'
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v4
-        with:
-          packages: ''
-          accept-android-sdk-licenses: true
+    - name: Build with Gradle
+      run: ./gradlew assembleDebug
 
-      - name: Install Android SDK
-        run: |
-          sdkmanager "platform-tools"
-          sdkmanager "platforms;android-35"
-          sdkmanager "build-tools;35.0.0"
+    - name: Rename APK file
+      run: mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/woview.apk
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
-        with:
-          gradle-version: '8.11.1'
-
-      - name: Check project
-        run: |
-          echo "=== Current directory ==="
-          pwd
-          echo "=== Files ==="
-          ls -la
-          echo "=== App ==="
-          ls -la app
-
-      - name: Build APK
-        run: gradle assembleDebug --stacktrace
-
-      - name: Find APK
-        run: |
-          echo "=== APK files ==="
-          find . -type f -name "*.apk" -print
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: AI-LATIHAN-debug-apk
-          path: AI-LATIHAN-GitHub-APK/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: woview-apk
+        path: app/build/outputs/apk/debug/woview.apk
