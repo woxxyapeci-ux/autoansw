@@ -1,4 +1,4 @@
-name: Build APK
+name: Build AI-LATIHAN APK
 
 on:
   workflow_dispatch:
@@ -11,6 +11,10 @@ jobs:
   build:
     name: Build AI-LATIHAN APK
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: AI-LATIHAN-GitHub-APK
 
     steps:
       - name: Checkout
@@ -28,38 +32,36 @@ jobs:
           packages: ''
           accept-android-sdk-licenses: true
 
-      - name: Install Android SDK components
+      - name: Install Android SDK
         run: |
           sdkmanager "platform-tools"
           sdkmanager "platforms;android-35"
           sdkmanager "build-tools;35.0.0"
 
-      - name: Show project files
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: '8.11.1'
+
+      - name: Check project
         run: |
-          echo "=== Project files ==="
+          echo "=== Project ==="
+          pwd
           ls -la
-          echo "=== App directory ==="
-          ls -la app || true
-          echo "=== Gradle files ==="
-          find . -maxdepth 2 -type f \( -name "build.gradle" -o -name "build.gradle.kts" -o -name "settings.gradle" -o -name "settings.gradle.kts" \) -print
-
-      - name: Make gradlew executable
-        run: chmod +x gradlew
-
-      - name: Check Gradle
-        run: ./gradlew --version
+          echo "=== App ==="
+          ls -la app
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        run: gradle assembleDebug --stacktrace
 
       - name: Find APK
         run: |
-          echo "=== APK files ==="
+          echo "=== APK ==="
           find . -type f -name "*.apk" -print
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: AI-LATIHAN-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: AI-LATIHAN-GitHub-APK/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
