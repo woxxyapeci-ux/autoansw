@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WoView</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <i class="fas fa-camera-retro"></i> WoView
+        </div>
+        <div class="menu-icon">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Selamat Datang di WoView!</h1>
+            <p>Jelajahi dunia melalui berbagai visual menarik yang disajikan secara acak setiap saat.</p>
+            <button class="btn-primary" onclick="showAlert()">Mulai Menjelajah</button>
+        </section>
+
+        <section class="gallery">
+            <h2>Koleksi Hari Ini</h2>
+            <div class="image-grid">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=400&q=80" alt="Nature">
+                    <div class="card-content">
+                        <h3>Alam</h3>
+                        <p>Pemandangan indah dari alam.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=400&q=80" alt="Tech">
+                    <div class="card-content">
+                        <h3>Teknologi</h3>
+                        <p>Inovasi terbaru masa kini.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1477959858617-67f30ac4ce78?auto=format&fit=crop&w=400&q=80" alt="City">
+                    <div class="card-content">
+                        <h3>Perkotaan</h3>
+                        <p>Kehidupan metropolis di malam hari.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=400&q=80" alt="Architecture">
+                    <div class="card-content">
+                        <h3>Arsitektur</h3>
+                        <p>Struktur bangunan modern minimalis.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
