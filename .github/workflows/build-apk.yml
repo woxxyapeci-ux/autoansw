@@ -20,30 +20,32 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-
-    - name: Build APK Otomatis
+    - name: Build and Package APK
       run: |
-        # Mencari folder tempat settings.gradle berada secara otomatis
-        TARGET_DIR=$(find . -name "settings.gradle" -exec dirname {} \; | head -n 1)
-        echo "Proyek ditemukan di folder: $TARGET_DIR"
+        echo "=== Memeriksa Struktur Folder ==="
+        ls -la
         
-        cd "$TARGET_DIR"
-        gradle wrapper --gradle-version 8.0.2
-        ./gradlew assembleDebug
-
-    - name: Kumpulkan File APK
-      run: |
-        APK_FILE=$(find . -name "app-debug.apk" | head -n 1)
-        if [ -n "$APK_FILE" ]; then
-          mkdir -p output
-          cp "$APK_FILE" output/woview.apk
-          echo "Berhasil menemukan APK di: $APK_FILE"
-        else
-          echo "File APK tidak ditemukan!"
+        # Cari lokasi folder yang berisi settings.gradle
+        PROJ_DIR=$(find . -name "settings.gradle" -exec dirname {} \; | head -n 1)
+        
+        if [ -z "$PROJ_DIR" ]; then
+          echo "ERROR: File settings.gradle tidak ditemukan di repositori!"
           exit 1
         fi
+        
+        echo "=== Masuk ke Folder Proyek: $PROJ_DIR ==="
+        cd "$PROJ_DIR"
+        
+        echo "=== Membuat Gradle Wrapper ==="
+        gradle wrapper --gradle-version 8.0.2
+        chmod +x gradlew
+        
+        echo "=== Memulai Build APK ==="
+        ./gradlew assembleDebug
+        
+        echo "=== Menyimpan Hasil APK ==="
+        mkdir -p $GITHUB_WORKSPACE/output
+        cp app/build/outputs/apk/debug/app-debug.apk $GITHUB_WORKSPACE/output/woview.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
