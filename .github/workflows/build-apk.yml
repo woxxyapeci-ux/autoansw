@@ -9,6 +9,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./WoView_Project
 
     steps:
     - uses: actions/checkout@v4
@@ -18,12 +21,13 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+        cache: gradle
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
 
     - name: Build with Gradle
-      run: gradle assembleDebug
+      run: ./gradlew assembleDebug
 
     - name: Rename APK file
       run: mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/woview.apk
@@ -32,4 +36,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: woview-apk
-        path: app/build/outputs/apk/debug/woview.apk
+        path: WoView_Project/app/build/outputs/apk/debug/woview.apk
