@@ -23,20 +23,23 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
-    - name: Generate Compatible Gradle & Build APK
+    - name: Build APK Otomatis
       run: |
-        if [ -d "WoView_Project" ]; then
-          cd WoView_Project
-        fi
+        # Mencari folder tempat settings.gradle berada secara otomatis
+        TARGET_DIR=$(find . -name "settings.gradle" -exec dirname {} \; | head -n 1)
+        echo "Proyek ditemukan di folder: $TARGET_DIR"
+        
+        cd "$TARGET_DIR"
         gradle wrapper --gradle-version 8.0.2
         ./gradlew assembleDebug
 
-    - name: Locate & Prepare APK
+    - name: Kumpulkan File APK
       run: |
-        APK_PATH=$(find . -name "app-debug.apk" | head -n 1)
-        if [ -n "$APK_PATH" ]; then
-          mkdir -p output_apk
-          cp "$APK_PATH" output_apk/woview.apk
+        APK_FILE=$(find . -name "app-debug.apk" | head -n 1)
+        if [ -n "$APK_FILE" ]; then
+          mkdir -p output
+          cp "$APK_FILE" output/woview.apk
+          echo "Berhasil menemukan APK di: $APK_FILE"
         else
           echo "File APK tidak ditemukan!"
           exit 1
@@ -46,4 +49,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: woview-apk
-        path: output_apk/woview.apk
+        path: output/woview.apk
